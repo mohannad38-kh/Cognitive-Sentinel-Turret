@@ -5,7 +5,6 @@ import threading
 import time
 from cvzone.HandTrackingModule import HandDetector
 
-# Config Serial
 COM_PORT = '/dev/ttyUSB0'
 BAUD_RATE = 115200
 
@@ -68,7 +67,6 @@ while True:
         lmList = hand["lmList"]
         wrist = lmList[0]
         
-        # 1. تحريك السيرفو بناءً على موقع اليد (يمين / شمال)
         x_pos = wrist[0]
         new_angle = int((x_pos / width) * 180)
         new_angle = max(0, min(180, new_angle))
@@ -77,7 +75,6 @@ while True:
             servo_angle = new_angle
             send_to_arduino({"servo": servo_angle})
 
-        # 2. إيماءة الأصابع للسيطرة على الليزر (كف مفتوح = تشغيل / قبضة = إطفاء)
         fingers = detector.fingersUp(hand)
         if fingers == [1, 1, 1, 1, 1]:  
             if not manual_laser:
@@ -88,7 +85,6 @@ while True:
                 manual_laser = False
                 send_to_arduino({"laser": False})
 
-    # UI Status
     status_str = "DANGER OVERRIDE ACTIVE!" if danger else "MANUAL CONTROL (HAND TRACKING)"
     status_color = (0, 0, 255) if danger else (0, 255, 0)
 
